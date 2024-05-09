@@ -5,7 +5,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://sh-cynosdbmysql-grp-4n86zp2q.sql.tencentcdb.com:20907/relia
+    url: jdbc:mysql://10.8.103.244:3306/relia
 #    url: jdbc:mysql://localhost/test
     username: root
     password: Relia123456
