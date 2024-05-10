@@ -21,6 +21,6 @@ public interface SignInfoMapper {
     int updateSign(@Param("company") String company,@Param("userName") String userName,@Param("userJob") String userJob,
                    @Param("userSign") String userSign, @Param("signTime") Date signTime,@Param("openId") String openId, @Param("department") String dept);
     int createSign(@Param("id") String id,@Param("company") String company,@Param("userName") String userName,@Param("userJob") String userJob,
-                        @Param("userSign") String userSign, @Param("signTime") Date signTime,@Param("openId") String openId, @Param("department") String dept);
+                        @Param("userSign") String userSign, @Param("signTime") Date signTime,@Param("openId") String openId, @Param("department") String department);
 
 }
