@@ -16,8 +16,8 @@ public interface NoteMapper {
 
   void updateNote(@Param("note") String note,
                   @Param("otherNote") String otherNote,@Param("changeTime") Date changeTime,
-                  @Param("openId") String openid,@Param("dept") String dept);
+                  @Param("openId") String openId,@Param("dept") String dept);
 
   void insertNote(@Param("id") String id,@Param("note") String note,
-                  @Param("otherNote") String otherNote,@Param("dept") String dept,@Param("changeTime") Date changeTime,@Param("openId") String openid);
+                  @Param("otherNote") String otherNote,@Param("dept") String dept,@Param("changeTime") Date changeTime,@Param("openId") String openId);
 }

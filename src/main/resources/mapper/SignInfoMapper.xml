@@ -35,10 +35,10 @@
                 AND company = #{company}
             </if>
             <if test="signTime != null">
-                AND sign_time >= #{signTime}
+                AND sign_time <![CDATA[ >= ]]> #{signTime}
             </if>
             <if test="endTime != null">
-                AND sign_time >= #{endTime}
+                AND sign_time <![CDATA[ <= ]]> #{endTime}
             </if>
             <if test="department != null">
                 AND DEPARTMENT = #{department}

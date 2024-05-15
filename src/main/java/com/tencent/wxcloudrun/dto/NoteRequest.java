@@ -12,6 +12,8 @@ public class NoteRequest {
 
   private String dept;
 
+  private String deptName;
+
   private String id;
 
 }

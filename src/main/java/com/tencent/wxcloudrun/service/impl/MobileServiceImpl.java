@@ -59,6 +59,7 @@ import java.util.List;
 
 @Service
 public class MobileServiceImpl implements MobileService {
+    final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     final SignInfoMapper signInfoMapper;
     final LoginInfoMapper loginInfoMapper;
 
@@ -81,11 +82,8 @@ public class MobileServiceImpl implements MobileService {
 
     @Override
     public ApiResponse loginCheck(String code) {
-
         String openId = getOpenId(code);
-        logger.info("1111+" + openId);
         if (openId == null || openId.isEmpty()) {
-
             return ApiResponse.error("OpenId不存在");
         }
         OaCode user = loginInfoMapper.getUser(openId);
@@ -97,7 +95,6 @@ public class MobileServiceImpl implements MobileService {
 
     @Override
     public ApiResponse setLab(String code, String dept) {
-
         if (dept == null || dept.isEmpty()) {
             return ApiResponse.error("dept不存在");
         }
@@ -106,8 +103,6 @@ public class MobileServiceImpl implements MobileService {
             return ApiResponse.error("OpenId不存在");
         }
         loginInfoMapper.setLab(openId, dept);
-
-
         return ApiResponse.ok();
     }
 
@@ -156,10 +151,18 @@ public class MobileServiceImpl implements MobileService {
         if (openId == null || openId.isEmpty()) {
             return ApiResponse.error("invalid code");
         }
+        if (dept==null) {
+            return ApiResponse.error("invalid department");
+        }
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.DATE, -30);
-        SignInfo id = signInfoMapper.getId(openId, dept, calendar.getTime());
+        SignInfo id = null;
+        try {
+            id = signInfoMapper.getId(openId, dept, simpleDateFormat.parse(simpleDateFormat.format(calendar.getTime())));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
         return ApiResponse.ok(id != null);
     }
 
@@ -170,7 +173,7 @@ public class MobileServiceImpl implements MobileService {
         String dept = data.getDepartment();
         //String path = data.getUserSign();
         SignInfo id = signInfoMapper.getIds(openId, dept);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
         try {
             if (id != null) {
 
@@ -397,7 +400,7 @@ public class MobileServiceImpl implements MobileService {
         if (path.isEmpty()) {
             return ApiResponse.error("获取下载地址错误");
         }
-        String noteUrl = setFile(path, dept, data.getOtherNote(), token);
+        String noteUrl = setFile(path, data.getDeptName(),dept, data.getOtherNote(), token);
         if (note != null) {
             noteMapper.updateNote(noteUrl, data.getOtherNote(), new Date(), openId, dept);
         } else {
@@ -408,7 +411,7 @@ public class MobileServiceImpl implements MobileService {
         return ApiResponse.ok("succ");
     }
 
-    private String setFile(String fileUrl, String dept, String otherNote, String access_token) {
+    private String setFile(String fileUrl,String deptName, String dept, String otherNote, String access_token) {
         String content = "";
         Document doc = new Document();
         ByteArrayOutputStream bos = null;
@@ -427,7 +430,7 @@ public class MobileServiceImpl implements MobileService {
 
                 //加载到doc中
                 doc.loadFromStream(inputStream, FileFormat.Doc);
-                doc.replace("$DEPT", dept, false, true);
+                doc.replace("$DEPT", deptName, false, true);
                 Paragraph para = doc.getSections().get(doc.getSections().getCount() - 1).getParagraphs().get(doc.getSections().get(0).getParagraphs().getCount() - 2);//在段落起始、末尾添加书签的开始标签和结束标签，并命名书签
                 //追加“其他”设置的内容
                 TextRange tr = para.appendText(otherNote + "\n");
